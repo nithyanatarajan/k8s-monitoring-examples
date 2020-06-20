@@ -1,0 +1,26 @@
+---
+# Use queries https://github.com/wrouesnel/postgres_exporter/blob/master/queries.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-postgresql-exporter
+  labels:
+    name: example-postgresql-exporter
+    app: postgresql
+data:
+  config.yaml: |
+    pg_host:
+      query: "SELECT inet_server_addr() as master"
+      metrics:
+        - master:
+            usage: "LABEL"
+            description: "Postgres master ip"
+    pg_database:
+      query: "SELECT pg_database.datname, pg_database_size(pg_database.datname) as size FROM pg_database"
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Name of the database"
+        - size:
+            usage: "GAUGE"
+            description: "Disk space used by the database"
